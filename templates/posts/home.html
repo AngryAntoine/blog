@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+{% load staticfiles %}
+{% block title %}My Blog{% endblock title %}
+{% block content %}
+
+  <div class="col-sm-6 col-sm-offset-3">
+    <br><br><br>
+    <form method="GET" action="">
+      <div class="input-group">
+        <input class="form-control" type="text" name="q" placeholder="Search posts" value="{{ request.GET.q }}"/>
+        <span class="input-group-btn">
+          <!--<input class="btn btn-default" type="submit" placeholder="Search"/>-->
+          <button class="btn btn-default" type="submit"><i class="fa fa-search" aria-hidden="true"></i>Search</button>
+        </span>
+      </div>
+    </form>
+    {% for obj in object_list %}
+    <div class="row">
+      <div class="col-sm-12">
+        <div class="thumbnail">
+          {% if obj.image %}
+          <img src="{{ obj.image.url }}" class="img-responsive" alt="Photo here">
+          {% endif %}
+          <div class="caption post-detail-item">
+            {% if obj.draft %}<h3 style="color: red;">Staff only: Draft</h3>{% endif %}
+            {% if obj.publish > today %}<h3>Staff only: Future Post</h3>{% endif %}
+            <h3>
+              <a href="{{ obj.get_absolute_url }}">
+                <p>{{obj.title}}</p>
+                <small>{{obj.publish}}</small>
+              </a>
+              <small>{{obj.timestamp|timesince}}</small>
+            </h3>
+            {% if obj.user.get_full_name %}
+              <small>Author: {{ obj.user.get_full_name }}</small>
+            {% else %}
+              <small>Author: {{ obj.user }}</small>
+            {% endif %}
+            <hr>
+            {{obj.get_markdown | truncatechars_html:50 }}
+            <hr>
+            <p>
+               <a href="{{ obj.get_absolute_url }}" class="btn btn-primary" role="button">View</a>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+    {% endfor %}
+    {% if request.user.is_superuser %}
+    <a href="{% url 'blog:blog_post_create' %}" class="btn btn-primary" role="button">Create</a>
+    {% endif %}
+    <br>
+    <div class="pagination">
+      <span class="step-links">
+        {% if object_list.has_previous %}
+            <a href="?page={{ object_list.previous_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ object_list.number }} of {{ object_list.paginator.num_pages }}
+        </span>
+
+        {% if object_list.has_next %}
+            <a href="?page={{ object_list.next_page_number }}{% if request.GET.q %}&q={{ request.GET.q }}{% endif %}">next</a>
+        {% endif %}
+      </span>
+    </div>
+  </div>
+{% endblock content %}

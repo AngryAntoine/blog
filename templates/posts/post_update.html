@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block head_extra %}
+  {{ form.media }}
+{% endblock head_extra %}
+{% load bootstrap %}
+{% block title %}Post Update{% endblock title %}
+{% block content %}
+<div class="col-sm-6">
+    <h1>Preview</h1>
+    <div class="content-preview">
+        <h3 id="preview-title"></h3>
+        <p id="preview-content"></p>
+    </div>
+</div>
+<div class="col-sm-6">
+    <h1>Form Update</h1>
+    <form action="" enctype="multipart/form-data" method="POST">
+        {% csrf_token %}
+        {{ form|bootstrap }}
+        <input type="submit" value="Update">
+    </form>
+    <a href="{% url 'blog:blog_home' %}" class="btn btn-primary" role="button">List</a>
+</div>
+{% endblock content %}

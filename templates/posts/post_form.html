@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block head_extra %}
+  {{ form.media }}
+{% endblock head_extra %}
+
+{% load bootstrap %}
+{% load crispy_forms_tags %}
+{% block title %}New post{% endblock title %}
+{% block content %}
+
+<div class="col-sm-6">
+    <h1>Preview</h1>
+    <div class="content-preview">
+        <h3 id="preview-title"></h3>
+        <p id="preview-content"></p>
+    </div>
+</div>
+<div class="col-sm-6">
+    <h1>Form</h1>
+    <form action="" enctype="multipart/form-data" method="POST">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <input type="submit" value="Create Post">
+    </form>
+    <a href="{% url 'blog:blog_home' %}" class="btn btn-primary" role="button">To List</a>
+</div>
+{% endblock content %}
